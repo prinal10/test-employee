@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 
 @RestController
 @Slf4j
@@ -31,12 +33,12 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public Employee addEmployee(Employee employee) {
+    public Employee addEmployee(@Valid @RequestBody Employee employee) {
         return employeeService.addEmployee(employee);
     }
 
     @PutMapping(value = "/{employeeId}")
-    public Employee updateEmployee(@PathVariable("employeeId") Long employeeId, @RequestBody Employee employee) {
+    public Employee updateEmployee(@PathVariable("employeeId") Long employeeId, @Valid @RequestBody Employee employee) {
         return employeeService.updateEmployee(employeeId, employee);
     }
 
