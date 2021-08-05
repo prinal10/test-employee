@@ -15,6 +15,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.util.MimeTypeUtils;
 
 @Configuration
 @EnableWebSecurity
@@ -52,6 +53,7 @@ public class CustomSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and().httpBasic().authenticationEntryPoint((httpServletRequest, httpServletResponse, e) -> {
                     httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+                    httpServletResponse.addHeader("content-type", MimeTypeUtils.APPLICATION_JSON_VALUE);
                     httpServletResponse.getOutputStream()
                             .write((new ObjectMapper()).writeValueAsBytes(
                                     globalExceptionHandler.handleAuthenticationException(e)));
@@ -59,12 +61,14 @@ public class CustomSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().csrf().disable().exceptionHandling()
                 .authenticationEntryPoint((httpServletRequest, httpServletResponse, e) -> {
                     httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+                    httpServletResponse.addHeader("content-type", MimeTypeUtils.APPLICATION_JSON_VALUE);
                     httpServletResponse.getOutputStream()
                             .write((new ObjectMapper()).writeValueAsBytes(
                                     globalExceptionHandler.handleAuthenticationException(e)));
                 })
                 .accessDeniedHandler((httpServletRequest, httpServletResponse, e) -> {
                     httpServletResponse.setStatus(HttpStatus.FORBIDDEN.value());
+                    httpServletResponse.addHeader("content-type", MimeTypeUtils.APPLICATION_JSON_VALUE);
                     httpServletResponse.getOutputStream()
                             .write((new ObjectMapper()).writeValueAsBytes(
                                     globalExceptionHandler.handleAccessDeniedException(e)));

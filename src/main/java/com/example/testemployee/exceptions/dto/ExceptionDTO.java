@@ -21,7 +21,7 @@ public class ExceptionDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class Exception {
-        private String errorSource;
         private String errorTitle;
+        private String errorSource;
     }
 }
