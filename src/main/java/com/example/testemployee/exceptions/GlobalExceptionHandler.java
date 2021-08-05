@@ -23,6 +23,18 @@ import java.util.stream.Collectors;
 @Slf4j
 public class GlobalExceptionHandler {
 
+
+    //400
+    @ExceptionHandler(EmployeeException.class)
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public Object handleEmployeeException(EmployeeException exception) {
+        log.error("Error EmployeeException: " + exception.getMessage(), exception);
+        return new ExceptionDTO(
+                Collections.singletonList(new ExceptionDTO.Exception("Bad Request.", exception.getMessage())));
+    }
+
+
     //Thrown on use of @Validated with javax.validation
     //400
     @ExceptionHandler({ConstraintViolationException.class})

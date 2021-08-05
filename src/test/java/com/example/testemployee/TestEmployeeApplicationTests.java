@@ -45,6 +45,20 @@ class TestEmployeeApplicationTests {
     }
 
     @Test
+    void testEmployeeAPIGetCallWithGoodPublicCredsWhichDoesntExists_shouldReturn400() {
+        ResponseEntity<ExceptionDTO> employeeResponseEntity =
+                template.withBasicAuth(applicationProperties.getPublicUsername(),
+                                applicationProperties.getPublicPassword())
+                        .getForEntity("/v1/employee/1", ExceptionDTO.class);
+        assertThat(employeeResponseEntity.getBody()).isNotNull();
+        assertThat(employeeResponseEntity.getStatusCode().value()).isEqualTo(400);
+        assertThat(employeeResponseEntity.getBody().getExceptionList()).isNotEmpty();
+        ExceptionDTO.Exception exception = employeeResponseEntity.getBody().getExceptionList().get(0);
+        assertThat(exception.getErrorTitle()).containsIgnoringCase("Bad Request.");
+        assertThat(exception.getErrorSource()).containsIgnoringCase("Employee with id: 1 doesn't exists.");
+    }
+
+    @Test
     void testEmployeeAPIGetCallWithBadPublicCreds_shouldReturn401() {
         Employee savedEmployee = employeeDAO.save(new Employee("Elon"));
         ResponseEntity<ExceptionDTO> employeeResponseEntity =
