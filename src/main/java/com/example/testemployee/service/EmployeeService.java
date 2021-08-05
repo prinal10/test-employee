@@ -23,6 +23,7 @@ public class EmployeeService {
         if (employee.isEmpty()) {
             throw new EmployeeException("Employee with id: " + employeeId + " doesn't exists.");
         }
+        log.info("Employee found with employeeId:" + employeeId);
         return employee.get();
     }
 
@@ -34,12 +35,14 @@ public class EmployeeService {
     }
 
     public Employee addEmployee(Employee employee) {
+        log.info("adding employee: " + employee.getName());
         return employeeDAO.save(new Employee(employee.getName()));
     }
 
     public Employee updateEmployee(Long employeeId, Employee employee) {
         Employee existingEmployee = getEmployee(employeeId);
         existingEmployee.setName(employee.getName());
+        log.info("updating employee: " + employee.getName());
         return employeeDAO.saveAndFlush(existingEmployee);
     }
 }

@@ -7,6 +7,7 @@ import org.hibernate.validator.internal.engine.path.PathImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -72,6 +73,16 @@ public class GlobalExceptionHandler {
         log.error("Error HttpMessageNotReadableException: " + exception.getMessage(), exception);
         return new ExceptionDTO(Collections.singletonList(
                 new ExceptionDTO.Exception("Unable to convert supplied json data.", "Request body.")));
+    }
+
+    //401
+    @ExceptionHandler({AuthenticationException.class})
+    @ResponseStatus(code = HttpStatus.UNAUTHORIZED)
+    @ResponseBody
+    public Object handleAuthenticationException(AuthenticationException exception) {
+        log.error("error AuthenticationException: " + exception.getMessage());
+        return new ExceptionDTO(Collections.singletonList(
+                new ExceptionDTO.Exception("Unauthorized.", "Authorization Header.")));
     }
 
     //403

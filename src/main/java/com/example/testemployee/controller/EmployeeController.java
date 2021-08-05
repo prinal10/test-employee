@@ -30,6 +30,7 @@ public class EmployeeController implements com.example.testemployee.controller.s
     @GetMapping(value = "/{employeeId}")
     @PreAuthorize("hasAnyRole('READ_WRITE', 'READ_ONLY')")
     public Employee getEmployee(@PathVariable("employeeId") Long employeeId) {
+        log.info("GET request received for employeeId: " + employeeId);
         return employeeService.getEmployee(employeeId);
     }
 
@@ -37,6 +38,7 @@ public class EmployeeController implements com.example.testemployee.controller.s
     @PostMapping
     @PreAuthorize("hasRole('READ_WRITE')")
     public Employee addEmployee(@Valid @RequestBody Employee employee) {
+        log.info("POST request received for employee: " + employee.getName());
         return employeeService.addEmployee(employee);
     }
 
@@ -44,6 +46,7 @@ public class EmployeeController implements com.example.testemployee.controller.s
     @PutMapping(value = "/{employeeId}")
     @PreAuthorize("hasRole('READ_WRITE')")
     public Employee updateEmployee(@PathVariable("employeeId") Long employeeId, @Valid @RequestBody Employee employee) {
+        log.info("PUT request received for employeeId: " + employeeId);
         return employeeService.updateEmployee(employeeId, employee);
     }
 
@@ -51,6 +54,7 @@ public class EmployeeController implements com.example.testemployee.controller.s
     @DeleteMapping(value = "/{employeeId}")
     @PreAuthorize("hasRole('READ_WRITE')")
     public Employee deleteEmployee(@PathVariable("employeeId") Long employeeId) {
+        log.info("DELETE request received for employeeId: " + employeeId);
         return employeeService.deleteEmployee(employeeId);
     }
 

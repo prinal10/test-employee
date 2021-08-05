@@ -1,8 +1,11 @@
 package com.example.testemployee.security;
 
+import com.example.testemployee.exceptions.GlobalExceptionHandler;
 import com.example.testemployee.properties.ApplicationProperties;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -19,9 +22,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class CustomSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final ApplicationProperties applicationProperties;
+    private final GlobalExceptionHandler globalExceptionHandler;
 
-    public CustomSecurityConfig(ApplicationProperties applicationProperties) {
+    public CustomSecurityConfig(ApplicationProperties applicationProperties,
+                                GlobalExceptionHandler globalExceptionHandler) {
         this.applicationProperties = applicationProperties;
+        this.globalExceptionHandler = globalExceptionHandler;
     }
 
     @Override
@@ -44,8 +50,25 @@ public class CustomSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/v3/api-docs/**").permitAll()
                 .antMatchers("/h2-console/**").permitAll()
                 .anyRequest().authenticated()
-                .and().httpBasic()
-                .and().csrf().disable();
+                .and().httpBasic().authenticationEntryPoint((httpServletRequest, httpServletResponse, e) -> {
+                    httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+                    httpServletResponse.getOutputStream()
+                            .write((new ObjectMapper()).writeValueAsBytes(
+                                    globalExceptionHandler.handleAuthenticationException(e)));
+                })
+                .and().csrf().disable().exceptionHandling()
+                .authenticationEntryPoint((httpServletRequest, httpServletResponse, e) -> {
+                    httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+                    httpServletResponse.getOutputStream()
+                            .write((new ObjectMapper()).writeValueAsBytes(
+                                    globalExceptionHandler.handleAuthenticationException(e)));
+                })
+                .accessDeniedHandler((httpServletRequest, httpServletResponse, e) -> {
+                    httpServletResponse.setStatus(HttpStatus.FORBIDDEN.value());
+                    httpServletResponse.getOutputStream()
+                            .write((new ObjectMapper()).writeValueAsBytes(
+                                    globalExceptionHandler.handleAccessDeniedException(e)));
+                });
     }
 
     @Override
