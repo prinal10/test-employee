@@ -1,0 +1,7 @@
+com:
+  example:
+    testemployee:
+      adminUsername: "admin"
+      adminPassword: "admin"
+      publicUsername: "pubUser"
+      publicPassword: "pubPassword"
