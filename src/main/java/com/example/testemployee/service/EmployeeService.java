@@ -18,4 +18,16 @@ public class EmployeeService {
     public Employee getEmployee(Long employeeId) {
         return null;
     }
+
+    public Employee deleteEmployee(Long employeeId) {
+        return null;
+    }
+
+    public Employee addEmployee(Employee employee) {
+        return null;
+    }
+
+    public Employee updateEmployee(Employee employee) {
+        return null;
+    }
 }
