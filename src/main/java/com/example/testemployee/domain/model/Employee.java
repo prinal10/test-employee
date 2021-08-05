@@ -2,12 +2,13 @@ package com.example.testemployee.domain.model;
 
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotEmpty;
 
@@ -15,7 +16,6 @@ import javax.validation.constraints.NotEmpty;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Schema(name = "Employee json with all employee info.")
 public class Employee {
 
@@ -25,6 +25,7 @@ public class Employee {
             description = "Employee identification number as per the database.",
             example = "1"
     )
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @NotEmpty
