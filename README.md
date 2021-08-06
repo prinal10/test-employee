@@ -22,3 +22,8 @@ A spring boot app for employee api.
 ### Link:
 
 - To access the swagger docs, go to =>  http://localhost:8080/swagger-ui.html
+
+### Users:
+ There are 2 users added:
+ - public user with username as 'pubUser' and password as 'pubPassword' (with READ_ONLY roles)
+ - admin user with username as 'admin' and password as 'admin' (with READ_WRITE roles)
