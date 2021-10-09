@@ -14,4 +14,6 @@ public class ApplicationProperties {
     private String adminPassword;
     private String publicUsername;
     private String publicPassword;
+    private String cronUsername;
+    private String cronPassword;
 }

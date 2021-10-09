@@ -24,22 +24,25 @@ public class CustomSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final ApplicationProperties applicationProperties;
     private final GlobalExceptionHandler globalExceptionHandler;
+    private final AuthorityAuthenticationProvider authorityAuthenticationProvider;
 
     public CustomSecurityConfig(ApplicationProperties applicationProperties,
-                                GlobalExceptionHandler globalExceptionHandler) {
+                                GlobalExceptionHandler globalExceptionHandler,
+                                AuthorityAuthenticationProvider authorityAuthenticationProvider) {
         this.applicationProperties = applicationProperties;
         this.globalExceptionHandler = globalExceptionHandler;
+        this.authorityAuthenticationProvider = authorityAuthenticationProvider;
     }
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication().withUser(applicationProperties.getAdminUsername())
-                .password(passwordEncoder().encode(applicationProperties.getAdminPassword()))
-                .roles("READ_WRITE");
-        auth.inMemoryAuthentication().withUser(applicationProperties.getPublicUsername())
-                .password(passwordEncoder().encode(applicationProperties.getPublicPassword()))
-                .roles("READ_ONLY");
-    }
+//    @Override
+//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//        auth.inMemoryAuthentication().withUser(applicationProperties.getAdminUsername())
+//                .password(passwordEncoder().encode(applicationProperties.getAdminPassword()))
+//                .roles("READ_WRITE");
+//        auth.inMemoryAuthentication().withUser(applicationProperties.getPublicUsername())
+//                .password(passwordEncoder().encode(applicationProperties.getPublicPassword()))
+//                .roles("READ_ONLY");
+//    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -72,7 +75,7 @@ public class CustomSecurityConfig extends WebSecurityConfigurerAdapter {
                     httpServletResponse.getOutputStream()
                             .write((new ObjectMapper()).writeValueAsBytes(
                                     globalExceptionHandler.handleAccessDeniedException(e)));
-                });
+                }).and().authenticationProvider(authorityAuthenticationProvider);
     }
 
     @Override
